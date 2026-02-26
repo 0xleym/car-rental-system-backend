@@ -23,7 +23,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
       role: decoded.role,
     };
     next();
-  } catch (error) {
+  } catch {
     throw new ApiError(401, "Token invalid");
   }
 });

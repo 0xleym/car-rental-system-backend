@@ -1,4 +1,6 @@
 import pkg from "pg";
+import logger from "../utils/logger.js";
+
 const { Pool } = pkg;
 
 const pool = new Pool({
@@ -9,8 +11,12 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-pool.on("connection", () => {
-  console.log("Connection pool established with database");
+pool.on("connect", () => {
+  logger.info("Database connection pool established");
+});
+
+pool.on("error", (err) => {
+  logger.error({ err }, "Unexpected database pool error");
 });
 
 export default pool;

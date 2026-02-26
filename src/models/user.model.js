@@ -6,6 +6,7 @@ const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
 class User {
   /**
    * Create a new user with a hashed password.
+   * @returns {object} The created user (id, username, role, created_at)
    */
   static async create(username, password, role = "user") {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -47,6 +48,7 @@ class User {
 
   /**
    * Update user fields. If password is updated, it will be hashed.
+   * @returns {object} The updated user (id, username, role, created_at)
    */
   static async update(id, updates) {
     const allowed = ["username", "password"];
@@ -54,10 +56,11 @@ class User {
     const values = [];
     let paramCount = 1;
 
-    for (let [key, value] of Object.entries(updates)) {
+    for (const [key, rawValue] of Object.entries(updates)) {
       if (!allowed.includes(key)) continue;
-      if (key === "username") value = value.toLowerCase();
-      if (key === "password") value = await bcrypt.hash(value, SALT_ROUNDS);
+      let value = rawValue;
+      if (key === "username") value = rawValue.toLowerCase();
+      if (key === "password") value = await bcrypt.hash(rawValue, SALT_ROUNDS);
 
       fields.push(`${key} = $${paramCount++}`);
       values.push(value);
@@ -76,6 +79,7 @@ class User {
 
   /**
    * Delete a user by ID.
+   * @returns {boolean} True if a row was deleted
    */
   static async delete(id) {
     const query = `DELETE FROM users WHERE id = $1`;
