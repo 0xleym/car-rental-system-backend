@@ -1,6 +1,6 @@
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 
-const errorHandler = (err, res, req, next) => {
+const errorHandler = (err, req, res, next) => {
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       success: false,

@@ -18,7 +18,7 @@ class User {
 
   // update user
   static async update(id, updates) {
-    const allowed = [username, password];
+    const allowed = ["username", "password"];
     const fields = [];
     const values = [];
     let paramCount = 1;
@@ -37,7 +37,7 @@ class User {
 
     values.push(id);
 
-    const query = `UPDATE users SET ${fields.join(",")} WHERE id = $${paramCount}`;
+    const query = `UPDATE users SET ${fields.join(",")} WHERE id = $${paramCount} RETURNING id, username, created_at`;
     const result = await pool.query(query, values);
     return result?.rows[0];
   }

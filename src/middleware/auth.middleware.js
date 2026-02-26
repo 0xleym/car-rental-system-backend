@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-  const authHeader = req.headers.auhtorization;
+  const authHeader = req.headers.authorization;
 
   if (!authHeader) throw new ApiError(401, "Authorization header missing");
 
@@ -17,7 +17,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    res.user = {
+    req.user = {
       userId: decoded.userId,
       username: decoded.username,
     };

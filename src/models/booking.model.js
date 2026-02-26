@@ -41,17 +41,23 @@ class Booking {
   }
   // update booking
   static async update(id, updates) {
+    const allowed = ["car_name", "days", "rent_per_day", "status"];
     const fields = [];
     const values = [];
     let paramCount = 1;
 
     for (let [key, value] of Object.entries(updates)) {
+      if (!allowed.includes(key)) continue;
       fields.push(`${key} = $${paramCount}`);
       values.push(value);
       paramCount++;
     }
+
+    if (fields.length === 0) {
+      throw new Error("No valid fields to update");
+    }
     values.push(id);
-    const query = `UPDATE bookings SET ${fields.join(",")} WHERE id = ${paramCount} RETURNING *`;
+    const query = `UPDATE bookings SET ${fields.join(",")} WHERE id = $${paramCount} RETURNING *`;
     const result = await pool.query(query, values);
     return result?.rows[0];
   }
