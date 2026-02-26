@@ -20,6 +20,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     req.user = {
       userId: decoded.userId,
       username: decoded.username,
+      role: decoded.role,
     };
     next();
   } catch (error) {
